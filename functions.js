@@ -40,3 +40,28 @@ const tryCatch = controller => async (req, res) => {
  */
 
  const removeRepeated = (arr) => [...new Set(arr)];
+
+ /**
+  * @description Removes the datavalues key from sequelize results
+  * @param {object} newData object containing the results
+  * @returns object without the datavalues keys
+  * Sourced from Andela's tembea project
+  */
+ const removeDataValues = (newData) => {
+     let sorted = newData;
+     if (sorted.dataValues) {
+       sorted = sorted.dataValues;
+     }
+
+     Object.keys(sorted).map((key) => {
+       if (sorted[key] && sorted[key].dataValues) {
+         sorted[key] = sorted[key].dataValues;
+         const data = RemoveDataValues.removeDataValues(sorted[key]);
+         sorted[key] = data;
+       } else if (sorted[key]) {
+         sorted[key] = sorted[key];
+       }
+       return sorted;
+     });
+     return sorted;
+   };
