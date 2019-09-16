@@ -47,6 +47,7 @@ const tryCatch = controller => async (req, res) => {
   * @returns object without the datavalues keys
   * Sourced from Andela's tembea project
   */
+
  const removeDataValues = (newData) => {
      let sorted = newData;
      if (sorted.dataValues) {
@@ -65,3 +66,31 @@ const tryCatch = controller => async (req, res) => {
      });
      return sorted;
    };
+
+/**
+ * @description handles sequelize errors
+ * @param  {object} error - The error object
+ * @returns object containing error code and message
+ */
+
+const handleSequelizeError = (error) => {
+  let response;
+  switch (error) {
+    case (error instanceof ValidationError):
+      response = { code: 400, msg: error.errors };
+      break;
+    case (error instanceof UniqueConstraintError):
+      response = { code: 409, msg: error.message };
+      break;
+    case (error instanceof ForeignKeyConstraintError):
+      response = { code: 404, msg: error.message };
+      break;
+    case (error instanceof ConnectionError):
+      response = { code: 500, msg: 'could not connect...' };
+      break;
+    default:
+      response = { code: 500, msg: error.message}
+      break;
+  }
+  return response;
+};
