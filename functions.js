@@ -94,3 +94,18 @@ const handleSequelizeError = (error) => {
   }
   return response;
 };
+
+/**
+  * @description clears logs in intervals using node-cron library (in this case 28th of the month)
+  * @param {string} interval time interval
+  * @returns object without the datavalues keys
+  * Sourced from Andela's tembea project
+  */
+cron.schedule("* * 28 * *", function() {
+  console.log("Running Cron Job");
+  fs.unlink("./error.log", err => {
+    if (err) throw err;
+    console.log("Error log file succesfully deleted");
+  });
+});
+
